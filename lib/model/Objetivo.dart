@@ -4,11 +4,11 @@ class Objetivo{
 
   int _id;
   String _descricao;
-  bool _money;
+  bool _money = false;
   int _qtdObjetivo;
   DateTime _ano;
   DateTime _dtaCriacao;
-  List<Lancamento> _lancamentos;
+  List<Lancamento> _lancamentos = [];
 
   Objetivo(
       final String descricao,
