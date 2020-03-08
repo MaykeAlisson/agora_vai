@@ -15,7 +15,7 @@ class HomeProvider extends ChangeNotifier {
     return _userName;
   }
 
-//  Future<void> initializeAllData() async {
+//  Future<void> buscaTodosDados() async {
 //    try{
 //      bool doesFileExits = await storage.fileExits();
 //      if(doesFileExits){

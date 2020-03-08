@@ -1,4 +1,4 @@
-import 'package:agora_vai/provider/home.dart';
+
 import 'package:agora_vai/ui/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,6 +21,11 @@ class _NewUserScreenState extends State<NovoUsuarioScreen> {
   String _userName;
 
   void _createUser() async {
+    final isValid = _form.currentState.validate();
+    if (!isValid) {
+      return;
+    }
+    _form.currentState.save();
     // Todo pega o nome do usuario e cria uma conta com o nome e um objetivo default
     setState(() {
       _isLoading = true;
