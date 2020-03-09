@@ -1,8 +1,8 @@
-import 'package:agora_vai/db/db_provider.dart';
+import 'package:agora_vai/db/db_helper.dart';
 import 'package:flutter/cupertino.dart';
 
 class HomeProvider extends ChangeNotifier {
-  DBProvider db;
+  DBHelper db;
 
   bool _jaEhUsuario;
   String _userName;

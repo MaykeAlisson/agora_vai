@@ -5,7 +5,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class DBHelper {
-
   static final _databaseName = "agovai.db";
   static final _databaseVersion = 1;
 
@@ -27,6 +26,7 @@ class DBHelper {
 
   // torna esta classe singleton
   DBHelper._privateConstructor();
+
   static final DBHelper instance = DBHelper._privateConstructor();
 
   // tem somente uma referência ao banco de dados
@@ -44,8 +44,7 @@ class DBHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   // Código SQL para criar o banco de dados e a tabela
@@ -55,18 +54,23 @@ class DBHelper {
             $usuarioColumnId INTEGER PRIMARY KEY,
             $usuarioColumnNome TEXT NOT NULL
           )
-           CREATE TABLE $tableLancamento (
+          ''');
+    await db.execute('''
+          CREATE TABLE $tableLancamento (
             $lancamentoColumnId INTEGER PRIMARY KEY,
             $lancamentoColumnDescricao TEXT NOT NULL,
             $lancamentoColumnQuanidade INTEGER NOT NULL,
             $lancamentoColumnDtaLancamento TEXT NOT NULL,
             $lancamentoColumnIdObjetivo INTEGER NOT NULL,
           )
+          ''');
+
+    await db.execute('''
            CREATE TABLE $tableObjetivo (
             $objetivoColumnId INTEGER PRIMARY KEY,
             $objetivooColumnQtdObjetivo INTEGER NOT NULL,
             $objetivoColumnDtaCriacao TEXT NOT NULL
-          )
+           )
           ''');
   }
 
@@ -86,13 +90,16 @@ class DBHelper {
     Database db = await instance.database;
     return await db.query(table);
   }
+
   // Todos os métodos : inserir, consultar, atualizar e excluir,
   // também podem ser feitos usando  comandos SQL brutos.
   // Esse método usa uma consulta bruta para fornecer a contagem de linhas.
   Future<int> queryRowCount() async {
     Database db = await instance.database;
-    return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $table'));
+    return Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM $table'));
   }
+
   // Assumimos aqui que a coluna id no mapa está definida. Os outros
   // valores das colunas serão usados para atualizar a linha.
   Future<int> update(Map<String, dynamic> row) async {
@@ -100,11 +107,11 @@ class DBHelper {
     int id = row[columnId];
     return await db.update(table, row, where: '$columnId = ?', whereArgs: [id]);
   }
+
   // Exclui a linha especificada pelo id. O número de linhas afetadas é
   // retornada. Isso deve ser igual a 1, contanto que a linha exista.
   Future<int> delete(int id) async {
     Database db = await instance.database;
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
-
 }
