@@ -4,17 +4,14 @@ class Objetivo{
 
   int _id;
   String _descricao;
-  bool _money = false;
   int _qtdObjetivo;
   DateTime _dtaCriacao;
 
   Objetivo(
       final String descricao,
-      final bool money,
       final int qtdObjetivo
       ){
     this._descricao = descricao;
-    this._money = money;
     this._qtdObjetivo = qtdObjetivo;
     this._dtaCriacao = new DateTime.now();
   }
@@ -25,12 +22,6 @@ class Objetivo{
 
   set qtdObjetivo(int value) {
     _qtdObjetivo = value;
-  }
-
-  bool get money => _money;
-
-  set money(bool value) {
-    _money = value;
   }
 
   String get descricao => _descricao;
