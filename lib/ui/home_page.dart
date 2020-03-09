@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 
@@ -38,7 +39,7 @@ class _HomeState extends State<Home> {
       _isLoading = true;
     });
     try {
-      await Provider.of<HomeProvider>(context,listen:false).buscaTodosDados();
+//      await Provider.of<HomeProvider>(context,listen:false).buscaTodosDados();
     }catch(e){
       //print(e);
     }
@@ -52,7 +53,7 @@ class _HomeState extends State<Home> {
       _isListLoading = true;
     });
     try {
-      await Provider.of<HomeProvider>(context).deletaObjetivo(type);
+//      await Provider.of<HomeProvider>(context).deletaObjetivo(type);
     }catch(e){
       //print(e);
     }
@@ -70,25 +71,21 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+     backgroundColor: Colors.grey,
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        title: Text("Agora Vai!",style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 17,fontWeight: FontWeight.w600))),
+        bottom: CustomAppBar(HomeProvider.getUserName.split(" ")[0],homeProvider.getTypes.length),
       ),
     );
+  }
+}
+
+class CustomAppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
   }
 }
