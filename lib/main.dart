@@ -1,6 +1,6 @@
 import 'package:agora_vai/provider/home.dart';
 import 'package:agora_vai/screens/loading_screen.dart';
-import 'package:agora_vai/screens/novo_usuario_screen.dart';
+import 'package:agora_vai/ui/novo_usuario_page.dart';
 import 'package:agora_vai/ui/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Agora Vai!',
             theme: ThemeData(
-              primarySwatch: Colors.grey,
+              primarySwatch: Colors.blue,
             ),
             home: homeProvider.jaEhUsuario ? Home() : NovoUsuarioScreen(),
 //            home: homeProvider.jaEhUsuario ? Home() : FutureBuilder(
