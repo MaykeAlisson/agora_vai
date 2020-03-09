@@ -13,17 +13,17 @@ class NovoObjetivo extends StatefulWidget {
 
 class _NovoObjetivoState extends State<NovoObjetivo> {
   final _form = GlobalKey<FormState>();
-  List<String> _types;
-  String _type;
+  List<String> _objetivos;
+  String _objetivo;
   bool _isLoading = false;
 
   void initState(){
     super.initState();
-    _types = Provider.of<HomeProvider>(context,listen: false).getTypes;
+    _objetivos = Provider.of<HomeProvider>(context,listen: false).getObjetivos;
   }
 
   bool alreadyExists(String type){
-    int index = _types.indexOf(type.toLowerCase());
+    int index = _objetivos.indexOf(type.toLowerCase());
     if(index==-1){
       return false;
     }
@@ -40,7 +40,7 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
       _isLoading = true;
     });
     try{
-      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_type.toLowerCase());
+      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_objetivo.toLowerCase());
       if(success){
         //print("Add Dialog success, popping off");
       }
@@ -73,16 +73,16 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
               textCapitalization: TextCapitalization.sentences,
               validator: (value){
                 if (value.isEmpty) {
-                  return 'Please provide a value.';
+                  return 'Descrição obrigatoria.';
                 }
                 if(alreadyExists(value)){
-                  return 'Type Already exists.';
+                  return 'Objetivo já existe.';
                 }
                 return null;
               },
               onChanged: (value){
                 setState(() {
-                  _type = value;
+                  _objetivo = value;
                 });
               },
               onFieldSubmitted: (value){
@@ -94,7 +94,7 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
       ),
       actions: <Widget>[
         FlatButton(
-          child: Text("Cancel",style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500))),
+          child: Text("Cancelar",style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500))),
           onPressed: (){
             Navigator.of(context).pop();
           },

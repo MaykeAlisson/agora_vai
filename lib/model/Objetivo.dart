@@ -6,30 +6,20 @@ class Objetivo{
   String _descricao;
   bool _money = false;
   int _qtdObjetivo;
-  DateTime _ano;
   DateTime _dtaCriacao;
-  List<Lancamento> _lancamentos = [];
 
   Objetivo(
       final String descricao,
       final bool money,
-      final int qtdObjetivo,
-      final DateTime ano
+      final int qtdObjetivo
       ){
     this._descricao = descricao;
     this._money = money;
     this._qtdObjetivo = qtdObjetivo;
-    this._ano = ano;
     this._dtaCriacao = new DateTime.now();
   }
 
   DateTime get dtaCriacao => _dtaCriacao;
-
-  DateTime get ano => _ano;
-
-  set ano(DateTime value) {
-    _ano = value;
-  }
 
   int get qtdObjetivo => _qtdObjetivo;
 
@@ -54,12 +44,6 @@ class Objetivo{
 
   set id(int value) {
     _id = value;
-  }
-
-  List<Lancamento> get lancamentos => _lancamentos;
-
-  set lancamentos(List<Lancamento> value) {
-    _lancamentos = value;
   }
 
 
