@@ -9,8 +9,8 @@ class Usuario{
       final String nome
       ){
     this._nome = nome;
+    this._xp = 0;
   }
-
 
   int get id => _id;
 

@@ -1,4 +1,6 @@
 
+import 'package:agora_vai/db/DbHelper.dart';
+import 'package:agora_vai/model/Usuario.dart';
 import 'package:agora_vai/ui/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +18,10 @@ class NovoUsuarioScreen extends StatefulWidget {
 }
 
 class _NewUserScreenState extends State<NovoUsuarioScreen> {
+
+  // Data Base
+  var _db = DBHelper();
+
   final _form = GlobalKey<FormState>();
   bool _isLoading = false;
   String _userName;
@@ -34,8 +40,9 @@ class _NewUserScreenState extends State<NovoUsuarioScreen> {
     try {
 //      bool isCreated = await Provider.of<HomeProvider>(context).createNewUserData(_userName);
      // todo cria usuario
-      bool usuarioCriado = true;
-      if(usuarioCriado){
+      Usuario usuario = new Usuario(_userName);
+      var usuarioCriado = await _db.salvarUsuario(usuario);
+      if(usuarioCriado != null){
         //print("New User Created");
         Navigator.pushReplacement(
             context,
@@ -50,7 +57,7 @@ class _NewUserScreenState extends State<NovoUsuarioScreen> {
         ); 
       }
     }catch(e){
-      //print(e);
+      print(e);
     }
     setState(() {
       _isLoading = false;

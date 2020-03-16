@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 //providers
-import '../provider/home.dart';
+import '../provider/HomeProvider.dart';
 
 class NovaTarefa extends StatefulWidget {
   @override
@@ -20,7 +20,7 @@ class _NovaTarefaState extends State<NovaTarefa> {
   @override
   void initState(){
     super.initState();
-    _type = Provider.of<HomeProvider>(context,listen: false).getTypes[0];
+//    _type = Provider.of<HomeProvider>(context,listen: false).getTypes[0];
   }
 
   Future<void> _onSubmit() async{
@@ -33,7 +33,8 @@ class _NovaTarefaState extends State<NovaTarefa> {
       _isLoading = true;
     });
     try{
-      bool success = await Provider.of<HomeProvider>(context).addTaskFromHome(_type, _taskName);
+//      bool success = await Provider.of<HomeProvider>(context).addTaskFromHome(_type, _taskName);
+      bool success = true;
       if(success){
         //print("Add all task Dialog success, popping off");
       }
@@ -48,7 +49,8 @@ class _NovaTarefaState extends State<NovaTarefa> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> _types = Provider.of<HomeProvider>(context).getTypes;
+//    List<String> _types = Provider.of<HomeProvider>(context).getTypes;
+    List<String> _types;
     List<DropdownMenuItem<String>> _items = [];
     _types.forEach((type){
       DropdownMenuItem<String> item = new DropdownMenuItem(

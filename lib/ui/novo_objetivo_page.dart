@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 //providers
-import '../provider/home.dart';
+import '../provider/HomeProvider.dart';
 
 class NovoObjetivo extends StatefulWidget {
   @override
@@ -19,7 +19,7 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
 
   void initState(){
     super.initState();
-    _objetivos = Provider.of<HomeProvider>(context,listen: false).getObjetivos;
+//    _objetivos = Provider.of<HomeProvider>(context,listen: false).getObjetivos;
   }
 
   bool alreadyExists(String type){
@@ -40,7 +40,8 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
       _isLoading = true;
     });
     try{
-      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_objetivo.toLowerCase());
+//      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_objetivo.toLowerCase());
+      bool success = true;
       if(success){
         //print("Add Dialog success, popping off");
       }

@@ -110,13 +110,15 @@ class DBHelper {
     return result;
   }
 
-  Future<Usuario> recuperaUsuario() async {
+  Future<bool> existeUsuario() async {
 
     var bancoDados = await db;
     String sql = "SELECT * FROM $tableUsuario ";
     var result = await bancoDados.rawQuery(sql);
-    Usuario usuario = Usuario.fromMap(result);
-    return usuario;
+    if(result != null){
+      return false;
+    }
+    return true;
   }
 
   Future<Usuario> recuperaUsuarioPorId(int id) async {

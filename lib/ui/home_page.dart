@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 
 // Provider
-import 'package:agora_vai/provider/home.dart';
+import 'package:agora_vai/provider/HomeProvider.dart';
 
 // mes
 import '../util/Mes.dart' as mes;

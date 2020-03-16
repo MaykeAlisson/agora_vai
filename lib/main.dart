@@ -1,4 +1,4 @@
-import 'package:agora_vai/provider/home.dart';
+import 'package:agora_vai/provider/HomeProvider.dart';
 import 'package:agora_vai/screens/loading_screen.dart';
 import 'package:agora_vai/ui/novo_usuario_page.dart';
 import 'package:agora_vai/ui/home_page.dart';
@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -20,20 +21,11 @@ class MyApp extends StatelessWidget {
         builder: (context, homeProvider, widget) {
           return MaterialApp(
             title: 'Agora Vai!',
+            debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
             home: homeProvider.jaEhUsuario ? Home() : NovoUsuarioScreen(),
-//            home: homeProvider.jaEhUsuario ? Home() : FutureBuilder(
-//              future: homeProvider.tryToGetData(),
-//              builder: (context,result){
-//                if(result.connectionState == ConnectionState.waiting){
-//                  return LoadingScreen();
-//                }else{
-//                  return NovoUsuarioScreen();
-//                }
-//              },
-//            ),
           );
         },
       ),
@@ -41,18 +33,4 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
 
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
-  }
-}
