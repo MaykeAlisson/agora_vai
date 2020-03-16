@@ -1,4 +1,6 @@
 
+import 'package:agora_vai/db/DbHelper.dart';
+
 class Lancamento{
 
   int _id;
@@ -42,6 +44,32 @@ class Lancamento{
 
   set id(int value) {
     _id = value;
+  }
+
+
+  Lancamento.fromMap(Map map){
+    this._id = map[DBHelper.lancamentoColumnId];
+    this._idObjetivo = map[DBHelper.lancamentoColumnIdObjetivo];
+    this._descricao = map[DBHelper.lancamentoColumnDescricao];
+    this._qtdLancamento = map[DBHelper.lancamentoColumnQuanidade];
+    this._dtaLancamento = map[DBHelper.lancamentoColumnDtaLancamento];
+  }
+
+  Map toMap(){
+
+    Map<String, dynamic> map = {
+      DBHelper.lancamentoColumnDescricao : this._descricao,
+      DBHelper.lancamentoColumnIdObjetivo : this._idObjetivo,
+      DBHelper.lancamentoColumnQuanidade : this._qtdLancamento,
+      DBHelper.lancamentoColumnDtaLancamento : this._dtaLancamento,
+    };
+
+    if(this._id != null){
+      map[DBHelper.lancamentoColumnId] = this._id;
+    }
+
+    return map;
+
   }
 
 
