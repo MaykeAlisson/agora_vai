@@ -116,9 +116,9 @@ class DBHelper {
     String sql = "SELECT * FROM $tableUsuario ";
     var result = await bancoDados.rawQuery(sql);
     if(result != null){
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
   Future<Usuario> recuperaUsuarioPorId(int id) async {
