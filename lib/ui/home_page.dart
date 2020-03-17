@@ -1,13 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
-
-// Provider
-import 'package:agora_vai/provider/HomeProvider.dart';
-
-// mes
 import '../util/Mes.dart' as mes;
 
 int date = DateTime.now().day;
@@ -24,6 +18,10 @@ class _HomeState extends State<Home> {
 
   bool _isLoading = false;
   bool _isListLoading = false;
+  String _nome;
+  int _xp;
+  int _lancamentos;
+  int _objetivos;
 
 
   @override

@@ -1,9 +1,7 @@
-import 'package:agora_vai/provider/HomeProvider.dart';
 import 'package:agora_vai/screens/loading_screen.dart';
-import 'package:agora_vai/ui/novo_usuario_page.dart';
 import 'package:agora_vai/ui/home_page.dart';
+import 'package:agora_vai/ui/novo_usuario_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'db/DbHelper.dart';
 
@@ -24,7 +22,6 @@ class MyApp extends StatelessWidget {
 }
 
 class MeuApp extends StatelessWidget {
-
   // Data Base
   var _db = DBHelper();
 
@@ -32,10 +29,10 @@ class MeuApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: verificaSeExisteDados(),
-      builder: (context, snapshot){
-        if(!snapshot.hasData){
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
           return LoadingScreen();
-        }else {
+        } else {
           if (snapshot.data == false) {
             return NovoUsuarioScreen();
           } else {
