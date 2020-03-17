@@ -113,9 +113,9 @@ class DBHelper {
   Future<bool> existeUsuario() async {
 
     var bancoDados = await db;
-    String sql = "SELECT * FROM $tableUsuario ";
+    String sql = "SELECT * FROM $tableUsuario LIMIT 1";
     var result = await bancoDados.rawQuery(sql);
-    if(result != null){
+    if(result[0] != null || result[0] != []){
       return true;
     }
     return false;
@@ -124,9 +124,9 @@ class DBHelper {
   Future<Usuario> recuperaUsuario() async {
 
     var bancoDados = await db;
-    String sql = "SELECT * FROM $tableUsuario";
+    String sql = "SELECT * FROM $tableUsuario LIMIT 1";
     var result = await bancoDados.rawQuery(sql);
-    Usuario usuario = Usuario.fromMap(result);
+    Usuario usuario = Usuario.fromMap(result[0]);
     return usuario;
   }
 
@@ -135,7 +135,7 @@ class DBHelper {
     var bancoDados = await db;
     String sql = "SELECT * FROM $tableUsuario WHERE $usuarioColumnId = $id";
     var result = await bancoDados.rawQuery(sql);
-    Usuario usuario = Usuario.fromMap(result);
+    Usuario usuario = Usuario.fromMap(result[0]);
     return usuario;
   }
 

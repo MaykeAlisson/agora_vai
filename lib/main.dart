@@ -44,8 +44,8 @@ class MeuApp extends StatelessWidget {
   }
 
   Future<bool> verificaSeExisteDados() async {
-    var usuario = await _db.existeUsuario();
-    if (usuario == false) {
+    bool ehUsuario = await _db.existeUsuario();
+    if (ehUsuario == false) {
       return false;
     }
     return true;

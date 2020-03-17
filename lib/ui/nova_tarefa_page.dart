@@ -47,7 +47,7 @@ class _NovaTarefaState extends State<NovaTarefa> {
   @override
   Widget build(BuildContext context) {
 //    List<String> _types = Provider.of<HomeProvider>(context).getTypes;
-    List<String> _types;
+    List<String> _types = ["teste", "teste2", "teste3"];
     List<DropdownMenuItem<String>> _items = [];
     _types.forEach((type){
       DropdownMenuItem<String> item = new DropdownMenuItem(

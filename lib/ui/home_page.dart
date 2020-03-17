@@ -1,6 +1,9 @@
 import 'package:agora_vai/db/DbHelper.dart';
 import 'package:agora_vai/model/Objetivo.dart';
 import 'package:agora_vai/model/Usuario.dart';
+import 'package:agora_vai/screens/loading_screen.dart';
+import 'package:agora_vai/ui/nova_tarefa_page.dart';
+import 'package:agora_vai/ui/novo_objetivo_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,7 +21,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   // Data Base
   var _db = DBHelper();
 
@@ -27,36 +29,26 @@ class _HomeState extends State<Home> {
   String _nome;
   int _xp;
   int _lancamentos;
-  int _objetivos;
-  List<Objetivo> _listObjetivos = List<Objetivo>();
-
-
-  @override
-  void initState(){
-    super.initState();
-    buscaDados();
-  }
+  int _qtdObjetivo = 3;
 
   void buscaDados() async {
     setState(() {
-      _isLoading = true;
+      _isListLoading = true;
     });
-    try {
+    try{
       Usuario usuario = await _db.recuperaUsuario();
       setState(() {
         _nome = usuario.nome;
         _xp = usuario.xp;
       });
-
-
-
-//      await Provider.of<HomeProvider>(context,listen:false).buscaTodosDados();
-    }catch(e){
+    }catch (e) {
       //print(e);
+    }finally{
+      setState(() {
+        _isListLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
+
   }
 
   Future<void> removeCardObjetivo(String type) async {
@@ -65,7 +57,7 @@ class _HomeState extends State<Home> {
     });
     try {
 //      await Provider.of<HomeProvider>(context).deletaObjetivo(type);
-    }catch(e){
+    } catch (e) {
       //print(e);
     }
     setState(() {
@@ -73,33 +65,45 @@ class _HomeState extends State<Home> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    buscaDados();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-     backgroundColor: Colors.blue,
+    return _isLoading ? LoadingScreen() : Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: Text("Agora Vai!",style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 17,fontWeight: FontWeight.w600))),
+        title: Text("Agora Vai!",
+            style: GoogleFonts.poppins(
+                textStyle:
+                    TextStyle(fontSize: 17, fontWeight: FontWeight.w600))),
 //        bottom: CustomAppBar(HomeProvider.getUserName.split(" ")[0],homeProvider.getTypes.length),
-        bottom: CustomAppBar(_nome ,3),
+        bottom: Perfil(_nome, _qtdObjetivo),
       ),
+      body: Container(),
     );
   }
+
+
+
+
 }
 
-class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
-
+class Perfil extends StatelessWidget with PreferredSizeWidget {
   final String _userName;
   final int _qtdObjetivo;
-  CustomAppBar(this._userName,this._qtdObjetivo);
+  Perfil(this._userName, this._qtdObjetivo);
   final size = AppBar().preferredSize*2.5;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 30,right: 20),
+      padding: EdgeInsets.only(left: 30, right: 20),
       height: size.height,
       width: AppBar().preferredSize.width,
       child: Column(
@@ -107,58 +111,86 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("Ola, $_userName",style: GoogleFonts.poppins(textStyle : TextStyle(color: Colors.white,fontSize: 30,fontWeight: FontWeight.w400),)),
-          SizedBox(height: 15,),
-          Text("Acompanhe seu desenvolvimento.",style: GoogleFonts.poppins( textStyle: TextStyle(color: Colors.white70 ,wordSpacing: 1,fontSize: 15)),),
+          Text("Ola, $_userName",
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.w400),
+              )),
+          SizedBox(
+            height: 15,
+          ),
+          Text(
+            "Acompanhe seu desenvolvimento.",
+            style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                    color: Colors.white70, wordSpacing: 1, fontSize: 15)),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text("$date, $month $year".toUpperCase(),style: GoogleFonts.poppins(textStyle:TextStyle(color: Colors.white60,fontSize: 13)),textAlign: TextAlign.left,),
+              Text(
+                "$date, $month $year".toUpperCase(),
+                style: GoogleFonts.poppins(
+                    textStyle:
+                    TextStyle(color: Colors.white60, fontSize: 13)),
+                textAlign: TextAlign.left,
+              ),
               Wrap(
                 children: <Widget>[
                   IconButton(
-                    icon: Icon(Icons.assignment,color: Colors.white,),
+                    icon: Icon(
+                      Icons.assignment,
+                      color: Colors.white,
+                    ),
                     tooltip: "Add Objetivo",
-                    onPressed: (){
+                    onPressed: () {
                       showDialog(
                           context: context,
-                          builder: (context){
-//                            return NewTypeDialog();
-                          return null;
-                          }
-                      );
+                          builder: (context) {
+                            return NovoObjetivo();
+                          });
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.add_circle_outline,color: Colors.white,),
+                    icon: Icon(
+                      Icons.add_circle_outline,
+                      color: Colors.white,
+                    ),
                     tooltip: "Add Tarefa",
-                    onPressed: (){
-                      if(_qtdObjetivo >= 1){
+                    onPressed: () {
+                      if (_qtdObjetivo >= 1) {
                         showDialog(
                             context: context,
-                            builder: (context){
-//                              return NewAllTaskDialog();
-                              return null;
-                            }
-                        );
-                      }else{
+                            builder: (context) {
+                              return NovaTarefa();
+                            });
+                      } else {
                         showDialog(
                             context: context,
-                            builder: (ctx){
+                            builder: (ctx) {
                               return AlertDialog(
-                                title: Text("Primeiro add um objetivo",style:GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500,fontSize: 20))),
+                                title: Text("Primeiro add um objetivo",
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 20))),
                                 actions: <Widget>[
                                   FlatButton(
-                                    child: Text("Fechar",style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500))),
-                                    onPressed: (){
+                                    child: Text("Fechar",
+                                        style: GoogleFonts.poppins(
+                                            textStyle: TextStyle(
+                                                fontWeight:
+                                                FontWeight.w500))),
+                                    onPressed: () {
                                       Navigator.of(context).pop();
                                     },
                                   )
                                 ],
                               );
-                            }
-                        );
+                            });
                       }
                     },
                   ),
@@ -174,3 +206,4 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Size get preferredSize => size;
 }
+
