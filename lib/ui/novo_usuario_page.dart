@@ -6,10 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 
-//providers
-import 'package:provider/provider.dart';
-
-//screen
 
 class NovoUsuarioScreen extends StatefulWidget {
   

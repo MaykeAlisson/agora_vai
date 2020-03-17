@@ -1,3 +1,6 @@
+import 'package:agora_vai/db/DbHelper.dart';
+import 'package:agora_vai/model/Objetivo.dart';
+import 'package:agora_vai/model/Usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,12 +19,16 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
+  // Data Base
+  var _db = DBHelper();
+
   bool _isLoading = false;
   bool _isListLoading = false;
   String _nome;
   int _xp;
   int _lancamentos;
   int _objetivos;
+  List<Objetivo> _listObjetivos = List<Objetivo>();
 
 
   @override
@@ -35,6 +42,14 @@ class _HomeState extends State<Home> {
       _isLoading = true;
     });
     try {
+      Usuario usuario = await _db.recuperaUsuario();
+      setState(() {
+        _nome = usuario.nome;
+        _xp = usuario.xp;
+      });
+
+
+
 //      await Provider.of<HomeProvider>(context,listen:false).buscaTodosDados();
     }catch(e){
       //print(e);
@@ -68,7 +83,7 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         title: Text("Agora Vai!",style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 17,fontWeight: FontWeight.w600))),
 //        bottom: CustomAppBar(HomeProvider.getUserName.split(" ")[0],homeProvider.getTypes.length),
-        bottom: CustomAppBar("Mayke",3),
+        bottom: CustomAppBar(_nome ,3),
       ),
     );
   }
