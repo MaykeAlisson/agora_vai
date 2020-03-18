@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
   int _xp;
   int _lancamentos;
   int _qtdObjetivo = 3;
+  List<Objetivo> _objetivos = List<Objetivo>();
 
   void buscaDados() async {
     setState(() {
@@ -85,7 +86,45 @@ class _HomeState extends State<Home> {
 //        bottom: CustomAppBar(HomeProvider.getUserName.split(" ")[0],homeProvider.getTypes.length),
         bottom: Perfil(_nome, _qtdObjetivo),
       ),
-      body: Container(),
+      body: _listObjetivos.length == 0 ?
+      Center(child: Text("Nenhum Objetivo Cadastrado",style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white,fontSize: 20),)))
+          : _isListLoading ? Center(child: CircularProgressIndicator(backgroundColor: Colors.white,),) :
+      ListView.builder(
+        physics: BouncingScrollPhysics(),
+        padding: EdgeInsets.only(left: 20),
+        scrollDirection: Axis.horizontal,
+        itemCount: _listObjetivos.length,
+        itemBuilder: (context, i){
+          return SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Card(
+                  child: Container(
+                    width: 160.0,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text('Discipline curl'),
+                        Text('https://sgdfgdgd/jdkjdhj.png/jashdghd'),
+                        Text('20'),
+                        Text('akhsgdahghsgdh')
+                      ],
+                    ),
+                  ),
+//                      return TypesCard(
+//                        height: height,
+//                        width: width,
+//                        type: tasks.getType,
+//                        done: tasks.getTotalDone,
+//                        total: tasks.getTotalTask,
+//                        deleteFunction : removeTypeCard,
+//                        tasksProvider: taskProviders[i],
+                )
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
