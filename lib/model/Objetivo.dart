@@ -1,7 +1,5 @@
 import 'package:agora_vai/db/DbHelper.dart';
 
-import 'Lancamento.dart';
-
 class Objetivo{
 
   int _id;

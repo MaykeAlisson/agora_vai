@@ -4,6 +4,7 @@ import 'package:agora_vai/model/Usuario.dart';
 import 'package:agora_vai/screens/loading_screen.dart';
 import 'package:agora_vai/ui/nova_tarefa_page.dart';
 import 'package:agora_vai/ui/novo_objetivo_page.dart';
+import 'package:agora_vai/ui/objetivo_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,26 +31,41 @@ class _HomeState extends State<Home> {
   int _xp;
   int _lancamentos;
   int _qtdObjetivo = 3;
-  List<Objetivo> _objetivos = List<Objetivo>();
+  List<Objetivo> _listObjetivos = List<Objetivo>();
 
   void buscaDados() async {
     setState(() {
       _isListLoading = true;
     });
-    try{
+
+    List<Objetivo> listaTemporaria = List<Objetivo>();
+
+    try {
       Usuario usuario = await _db.recuperaUsuario();
       setState(() {
         _nome = usuario.nome;
         _xp = usuario.xp;
       });
-    }catch (e) {
+      Objetivo obj = new Objetivo("mayke", 10, false);
+      listaTemporaria.add(obj);
+      Objetivo obj2 = new Objetivo("alisson", 20, false);
+      listaTemporaria.add(obj2);
+      Objetivo obj3 = new Objetivo("mayke", 10, false);
+      listaTemporaria.add(obj3);
+      Objetivo obj4 = new Objetivo("mayke", 10, false);
+      listaTemporaria.add(obj4);
+      Objetivo obj5 = new Objetivo("mayke", 10, false);
+      listaTemporaria.add(obj5);
+      setState(() {
+        _listObjetivos = listaTemporaria;
+      });
+    } catch (e) {
       //print(e);
-    }finally{
+    } finally {
       setState(() {
         _isListLoading = false;
       });
     }
-
   }
 
   Future<void> removeCardObjetivo(String type) async {
@@ -74,70 +90,64 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? LoadingScreen() : Scaffold(
-      backgroundColor: Colors.blue,
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        title: Text("Agora Vai!",
-            style: GoogleFonts.poppins(
-                textStyle:
-                    TextStyle(fontSize: 17, fontWeight: FontWeight.w600))),
-//        bottom: CustomAppBar(HomeProvider.getUserName.split(" ")[0],homeProvider.getTypes.length),
-        bottom: Perfil(_nome, _qtdObjetivo),
-      ),
-      body: _listObjetivos.length == 0 ?
-      Center(child: Text("Nenhum Objetivo Cadastrado",style: GoogleFonts.poppins(textStyle: TextStyle(color: Colors.white,fontSize: 20),)))
-          : _isListLoading ? Center(child: CircularProgressIndicator(backgroundColor: Colors.white,),) :
-      ListView.builder(
-        physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.only(left: 20),
-        scrollDirection: Axis.horizontal,
-        itemCount: _listObjetivos.length,
-        itemBuilder: (context, i){
-          return SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Card(
-                  child: Container(
-                    width: 160.0,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Text('Discipline curl'),
-                        Text('https://sgdfgdgd/jdkjdhj.png/jashdghd'),
-                        Text('20'),
-                        Text('akhsgdahghsgdh')
-                      ],
-                    ),
-                  ),
-//                      return TypesCard(
-//                        height: height,
-//                        width: width,
-//                        type: tasks.getType,
-//                        done: tasks.getTotalDone,
-//                        total: tasks.getTotalTask,
-//                        deleteFunction : removeTypeCard,
-//                        tasksProvider: taskProviders[i],
-                )
-              ],
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return _isLoading
+        ? LoadingScreen()
+        : Scaffold(
+            backgroundColor: Colors.blue,
+            appBar: AppBar(
+              elevation: 0,
+              centerTitle: true,
+              title: Text("Agora Vai!",
+                  style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontSize: 17, fontWeight: FontWeight.w600))),
+              bottom: Perfil(_nome, _qtdObjetivo),
             ),
+            body: _listObjetivos.length == 0
+                ? Center(
+                    child: Text("Nenhum Objetivo Cadastrado",
+                        style: GoogleFonts.poppins(
+                          textStyle:
+                              TextStyle(color: Colors.white, fontSize: 20),
+                        )))
+                : _isListLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.white,
+                        ),
+                      )
+                    : ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        padding: EdgeInsets.only(left: 20),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _listObjetivos.length,
+                        itemBuilder: (context, index) {
+                          final objetivo = _listObjetivos[index];
+                          return Center(
+                            child: SingleChildScrollView(
+                                child: ObjetivoCard(
+                              altura: height,
+                              largura: width,
+                              nome: objetivo.descricao,
+                              total: objetivo.qtdObjetivo,
+                              deleteFunction: () {},
+                            )),
+                          );
+                        },
+                      ),
           );
-        },
-      ),
-    );
   }
-
-
-
-
 }
 
 class Perfil extends StatelessWidget with PreferredSizeWidget {
   final String _userName;
   final int _qtdObjetivo;
+
   Perfil(this._userName, this._qtdObjetivo);
-  final size = AppBar().preferredSize*2.5;
+
+  final size = AppBar().preferredSize * 2.5;
 
   @override
   Widget build(BuildContext context) {
@@ -173,8 +183,7 @@ class Perfil extends StatelessWidget with PreferredSizeWidget {
               Text(
                 "$date, $month $year".toUpperCase(),
                 style: GoogleFonts.poppins(
-                    textStyle:
-                    TextStyle(color: Colors.white60, fontSize: 13)),
+                    textStyle: TextStyle(color: Colors.white60, fontSize: 13)),
                 textAlign: TextAlign.left,
               ),
               Wrap(
@@ -221,8 +230,7 @@ class Perfil extends StatelessWidget with PreferredSizeWidget {
                                     child: Text("Fechar",
                                         style: GoogleFonts.poppins(
                                             textStyle: TextStyle(
-                                                fontWeight:
-                                                FontWeight.w500))),
+                                                fontWeight: FontWeight.w500))),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
@@ -245,4 +253,3 @@ class Perfil extends StatelessWidget with PreferredSizeWidget {
   @override
   Size get preferredSize => size;
 }
-
