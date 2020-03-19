@@ -1,7 +1,9 @@
+import 'package:agora_vai/ui/objetivo_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ObjetivoCard extends StatefulWidget {
+  static const routeName = '/objetivo-card';
   final double altura;
   final double largura;
   final String nome;
@@ -70,8 +72,12 @@ class _ObjetivoCardState extends State<ObjetivoCard> {
     int left = widget.total - _lancamentos;
     return GestureDetector(
       onTap: () {
-//        Navigator.of(context).pushNamed(ToDosScreen.routeName,arguments:widget.tasksProvider);
-        _exibirTelaDetalhes();
+//        Navigator.of(context).pushNamed(ObjetivoPage.routeName);
+        Navigator.push(context, new MaterialPageRoute(
+            builder: (context) =>
+            new ObjetivoPage())
+        );
+//        _exibirTelaDetalhes();
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(20, 20, 20, 40),
