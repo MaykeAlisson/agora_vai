@@ -30,12 +30,12 @@ class _HomeState extends State<Home> {
   String _nome;
   int _xp;
   int _lancamentos;
-  int _qtdObjetivo = 3;
+  int _qtdObjetivo;
   List<Objetivo> _listObjetivos = List<Objetivo>();
 
   void buscaDados() async {
     setState(() {
-      _isListLoading = true;
+      _isLoading = true;
     });
 
     List<Objetivo> listaTemporaria = List<Objetivo>();
@@ -46,36 +46,41 @@ class _HomeState extends State<Home> {
         _nome = usuario.nome;
         _xp = usuario.xp;
       });
-      Objetivo obj = new Objetivo("mayke", 10, false);
-      listaTemporaria.add(obj);
-      Objetivo obj2 = new Objetivo("alisson", 20, false);
-      listaTemporaria.add(obj2);
-      Objetivo obj3 = new Objetivo("mayke", 10, false);
-      listaTemporaria.add(obj3);
-      Objetivo obj4 = new Objetivo("mayke", 10, false);
-      listaTemporaria.add(obj4);
-      Objetivo obj5 = new Objetivo("mayke", 10, false);
-      listaTemporaria.add(obj5);
+
+      List objetivosRecuperados = await _db.recuperarObjetivos();
+      for(var item in objetivosRecuperados){
+        Objetivo objetivo = Objetivo.fromMap(item);
+        listaTemporaria.add(objetivo);
+      }
+      print(listaTemporaria);
       setState(() {
         _listObjetivos = listaTemporaria;
+        _qtdObjetivo =  listaTemporaria == null ? 0 : listaTemporaria.length;
+        print(_qtdObjetivo);
       });
-    } catch (e) {
-      //print(e);
-    } finally {
+
+      int qtdLancamento = await _db.recuperarQtdLancamentos();
       setState(() {
-        _isListLoading = false;
+        _lancamentos = qtdLancamento;
+      });
+      listaTemporaria = null;
+    } catch (e) {
+      //print(e); todo  criar dialog para mostrar erro
+    }finally{
+      setState(() {
+        _isLoading = false;
       });
     }
   }
 
-  Future<void> removeCardObjetivo(String type) async {
+  Future<void> removeCardObjetivo(int idObjetivo) async {
     setState(() {
       _isListLoading = true;
     });
     try {
-//      await Provider.of<HomeProvider>(context).deletaObjetivo(type);
+      await _db.removerObjetivo(idObjetivo);
     } catch (e) {
-      //print(e);
+      //print(e); todo  criar dialog para mostrar erro
     }
     setState(() {
       _isListLoading = false;
@@ -94,49 +99,51 @@ class _HomeState extends State<Home> {
     final width = MediaQuery.of(context).size.width;
     return _isLoading
         ? LoadingScreen()
-        : Scaffold(
-            backgroundColor: Colors.blue,
-            appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              title: Text("Agora Vai!",
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                          fontSize: 17, fontWeight: FontWeight.w600))),
-              bottom: Perfil(_nome, _qtdObjetivo),
-            ),
-            body: _listObjetivos.length == 0
-                ? Center(
-                    child: Text("Nenhum Objetivo Cadastrado",
-                        style: GoogleFonts.poppins(
-                          textStyle:
-                              TextStyle(color: Colors.white, fontSize: 20),
-                        )))
-                : _isListLoading
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.white,
+        : Container(
+            child: Scaffold(
+              backgroundColor: Colors.blue,
+              appBar: AppBar(
+                elevation: 0,
+                centerTitle: true,
+                title: Text("Agora Vai!",
+                    style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w600))),
+                bottom: Perfil(_nome, _qtdObjetivo),
+              ),
+              body: _listObjetivos.length == 0
+                  ? Center(
+                      child: Text("Nenhum Objetivo Cadastrado",
+                          style: GoogleFonts.poppins(
+                            textStyle:
+                                TextStyle(color: Colors.white, fontSize: 20),
+                          )))
+                  : _isListLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Colors.white,
+                          ),
+                        )
+                      : ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          padding: EdgeInsets.only(left: 20),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _listObjetivos.length,
+                          itemBuilder: (context, index) {
+                            final objetivo = _listObjetivos[index];
+                            return Center(
+                              child: SingleChildScrollView(
+                                  child: ObjetivoCard(
+                                altura: height,
+                                largura: width,
+                                nome: objetivo.descricao,
+                                total: objetivo.qtdObjetivo,
+                                deleteFunction: () {},
+                              )),
+                            );
+                          },
                         ),
-                      )
-                    : ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        padding: EdgeInsets.only(left: 20),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _listObjetivos.length,
-                        itemBuilder: (context, index) {
-                          final objetivo = _listObjetivos[index];
-                          return Center(
-                            child: SingleChildScrollView(
-                                child: ObjetivoCard(
-                              altura: height,
-                              largura: width,
-                              nome: objetivo.descricao,
-                              total: objetivo.qtdObjetivo,
-                              deleteFunction: () {},
-                            )),
-                          );
-                        },
-                      ),
+            ),
           );
   }
 }
@@ -147,7 +154,7 @@ class Perfil extends StatelessWidget with PreferredSizeWidget {
 
   Perfil(this._userName, this._qtdObjetivo);
 
-  final size = AppBar().preferredSize * 2.5;
+  final size = AppBar().preferredSize * 3.5;
 
   @override
   Widget build(BuildContext context) {
@@ -164,11 +171,23 @@ class Perfil extends StatelessWidget with PreferredSizeWidget {
               style: GoogleFonts.poppins(
                 textStyle: TextStyle(
                     color: Colors.white,
-                    fontSize: 30,
+                    fontSize: 25,
                     fontWeight: FontWeight.w400),
               )),
           SizedBox(
             height: 15,
+          ),
+          Text(
+            "Acompanhe seu desenvolvimento.",
+            style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                    color: Colors.white70, wordSpacing: 1, fontSize: 15)),
+          ),
+          Text(
+            "Acompanhe seu desenvolvimento.",
+            style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                    color: Colors.white70, wordSpacing: 1, fontSize: 15)),
           ),
           Text(
             "Acompanhe seu desenvolvimento.",
@@ -218,7 +237,7 @@ class Perfil extends StatelessWidget with PreferredSizeWidget {
                       } else {
                         showDialog(
                             context: context,
-                            builder: (ctx) {
+                            builder: (context) {
                               return AlertDialog(
                                 title: Text("Primeiro add um objetivo",
                                     style: GoogleFonts.poppins(
