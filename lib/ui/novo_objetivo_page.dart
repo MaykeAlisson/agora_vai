@@ -1,7 +1,7 @@
+import 'package:agora_vai/db/DbHelper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class NovoObjetivo extends StatefulWidget {
   @override
@@ -9,25 +9,48 @@ class NovoObjetivo extends StatefulWidget {
 }
 
 class _NovoObjetivoState extends State<NovoObjetivo> {
+  // Data Base
+  var _db = DBHelper();
+
   final _form = GlobalKey<FormState>();
   List<String> _objetivos;
   String _objetivo;
   bool _isLoading = false;
 
-  void initState(){
+  void initState() {
     super.initState();
+    _buscaNomeObjetivos();
 //    _objetivos = Provider.of<HomeProvider>(context,listen: false).getObjetivos;
   }
 
-  bool alreadyExists(String type){
-    int index = _objetivos.indexOf(type.toLowerCase());
-    if(index==-1){
+  _buscaNomeObjetivos() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      List<String> listaTemporaria = List<String>();
+      listaTemporaria = await _db.buscaNomeObjetivos();
+      setState(() {
+        _objetivos = listaTemporaria;
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  bool jaExisteObjetivo(String nome) {
+    int index = _objetivos.indexOf(nome.toLowerCase());
+    if (index == -1) {
       return false;
     }
     return true;
   }
 
-  Future<void> _onSubmit() async{
+  Future<void> _onSubmit() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -36,13 +59,13 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
     setState(() {
       _isLoading = true;
     });
-    try{
+    try {
 //      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_objetivo.toLowerCase());
       bool success = true;
-      if(success){
+      if (success) {
         //print("Add Dialog success, popping off");
       }
-    }catch(e){
+    } catch (e) {
       //print(e);
     }
     setState(() {
@@ -55,7 +78,9 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      title: Text("Add novo objetivo",style:GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500,fontSize: 20))),
+      title: Text("Add novo objetivo",
+          style: GoogleFonts.poppins(
+              textStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 20))),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -69,21 +94,21 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
               autocorrect: true,
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.sentences,
-              validator: (value){
+              validator: (value) {
                 if (value.isEmpty) {
                   return 'Descrição obrigatoria.';
                 }
-                if(alreadyExists(value)){
+                if (jaExisteObjetivo(value)) {
                   return 'Objetivo já existe.';
                 }
                 return null;
               },
-              onChanged: (value){
+              onChanged: (value) {
                 setState(() {
                   _objetivo = value;
                 });
               },
-              onFieldSubmitted: (value){
+              onFieldSubmitted: (value) {
                 _onSubmit();
               },
             ),
@@ -92,14 +117,22 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
       ),
       actions: <Widget>[
         FlatButton(
-          child: Text("Cancelar",style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500))),
-          onPressed: (){
+          child: Text("Cancelar",
+              style: GoogleFonts.poppins(
+                  textStyle: TextStyle(fontWeight: FontWeight.w500))),
+          onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         FlatButton(
-          child: _isLoading ? CircularProgressIndicator() : Text("Add",style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w500)),),
-          onPressed: (){
+          child: _isLoading
+              ? CircularProgressIndicator()
+              : Text(
+                  "Add",
+                  style: GoogleFonts.poppins(
+                      textStyle: TextStyle(fontWeight: FontWeight.w500)),
+                ),
+          onPressed: () {
             _onSubmit();
           },
         ),

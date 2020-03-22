@@ -162,6 +162,14 @@ class DBHelper {
     return lancamentos;
   }
 
+  Future<List<String>> buscaNomeObjetivos() async{
+
+    var bancoDados = await db;
+    String sql = "SELECT $objetivoColumnDescricao FROM $tableObjetivo ORDER BY $objetivoColumnDtaCriacao DESC";
+    List<String> objetivosNome = await bancoDados.rawQuery(sql);
+    return objetivosNome;
+  }
+
   Future<int> atualizaObjetivo(Objetivo objetivo) async {
 
     var bancoDeDados = await db;
