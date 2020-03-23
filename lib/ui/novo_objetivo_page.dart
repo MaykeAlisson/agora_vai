@@ -20,7 +20,6 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
   void initState() {
     super.initState();
     _buscaNomeObjetivos();
-//    _objetivos = Provider.of<HomeProvider>(context,listen: false).getObjetivos;
   }
 
   _buscaNomeObjetivos() async {
@@ -50,7 +49,7 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
     return true;
   }
 
-  Future<void> _onSubmit() async {
+  Future<void> _salvar() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -61,10 +60,8 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
     });
     try {
 //      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_objetivo.toLowerCase());
-      bool success = true;
-      if (success) {
-        //print("Add Dialog success, popping off");
-      }
+
+
     } catch (e) {
       //print(e);
     }
@@ -86,32 +83,57 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
         children: <Widget>[
           Form(
             key: _form,
-            child: TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Descrição objetivo",
-              ),
-              autocorrect: true,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.sentences,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Descrição obrigatoria.';
-                }
-                if (jaExisteObjetivo(value)) {
-                  return 'Objetivo já existe.';
-                }
-                return null;
-              },
-              onChanged: (value) {
-                setState(() {
-                  _objetivo = value;
-                });
-              },
-              onFieldSubmitted: (value) {
-                _onSubmit();
-              },
-            ),
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Descrição objetivo",
+                  ),
+                  autocorrect: true,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.sentences,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Descrição obrigatoria.';
+                    }
+                    if (jaExisteObjetivo(value)) {
+                      return 'Objetivo já existe.';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _objetivo = value;
+                    });
+                  },
+//                  onFieldSubmitted: (value) {
+//                    _salvar();
+//                  },
+                ),
+                SizedBox(height: 10,),
+                TextFormField(
+                  decoration: InputDecoration(
+                      hintText: "Quantidade",
+                      border: OutlineInputBorder()
+                  ),
+                  autocorrect: true,
+                  keyboardType: TextInputType.number,
+                  textCapitalization: TextCapitalization.sentences,
+                  validator: (value){
+                    if (value.isEmpty) {
+                      return 'Please provide a value.';
+                    }
+                    return null;
+                  },
+                  onFieldSubmitted: (value){
+                    setState(() {
+//                      _taskName= value;
+                    });
+                  },
+                ),
+              ],
+            )
           )
         ],
       ),
@@ -133,7 +155,7 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
                       textStyle: TextStyle(fontWeight: FontWeight.w500)),
                 ),
           onPressed: () {
-            _onSubmit();
+            _salvar();
           },
         ),
       ],
