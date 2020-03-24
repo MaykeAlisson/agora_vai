@@ -24,30 +24,36 @@ class MyApp extends StatelessWidget {
 class MeuApp extends StatelessWidget {
   // Data Base
   var _db = DBHelper();
+//  bool _ehUsuario = true;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: verificaSeExisteDados(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return LoadingScreen();
-        } else {
+        if (snapshot.hasData) {
           if (snapshot.data == false) {
             return NovoUsuarioScreen();
           } else {
             return Home();
           }
+        } else {
+            return LoadingScreen();
+          }
         }
-      },
     );
   }
 
   Future<bool> verificaSeExisteDados() async {
-    bool ehUsuario = await _db.existeUsuario();
-    if (ehUsuario == false) {
-      return false;
+    try {
+      bool ehUsuario = await _db.existeUsuario();
+      if (ehUsuario == false) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      throw new Exception(e.toString());
     }
-    return true;
   }
+
 }
