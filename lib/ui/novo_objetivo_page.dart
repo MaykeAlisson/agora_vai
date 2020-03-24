@@ -1,4 +1,5 @@
 import 'package:agora_vai/db/DbHelper.dart';
+import 'package:agora_vai/model/Objetivo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,7 +16,9 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
   final _form = GlobalKey<FormState>();
   List<String> _objetivos;
   String _objetivo;
+  int _meta;
   bool _isLoading = false;
+  bool _money = false;
 
   void initState() {
     super.initState();
@@ -59,6 +62,12 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
       _isLoading = true;
     });
     try {
+
+      Objetivo objetivo = Objetivo(_objetivo, _meta, _money);
+      var salvarObjetivo = _db.salvarObjetivo(objetivo);
+      if(salvarObjetivo != null){
+      }
+
 //      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_objetivo.toLowerCase());
 
 
@@ -71,9 +80,16 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
     Navigator.of(context).pop();
   }
 
+  void _isMoney( bool money){
+    setState(() {
+      _money = money;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return SingleChildScrollView(
+      child: AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       title: Text("Add novo objetivo",
           style: GoogleFonts.poppins(
@@ -107,14 +123,14 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
                       _objetivo = value;
                     });
                   },
-//                  onFieldSubmitted: (value) {
-//                    _salvar();
-//                  },
+                  onFieldSubmitted: (value) {
+                    _salvar();
+                  },
                 ),
                 SizedBox(height: 10,),
                 TextFormField(
                   decoration: InputDecoration(
-                      hintText: "Quantidade",
+                      hintText: "Meta",
                       border: OutlineInputBorder()
                   ),
                   autocorrect: true,
@@ -122,16 +138,21 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
                   textCapitalization: TextCapitalization.sentences,
                   validator: (value){
                     if (value.isEmpty) {
-                      return 'Please provide a value.';
+                      return 'Informe uma meta.';
                     }
                     return null;
                   },
-                  onFieldSubmitted: (value){
+                  onChanged: (value) {
                     setState(() {
-//                      _taskName= value;
+                      _meta = int.parse(value);
                     });
                   },
+                  onFieldSubmitted: (value){
+                   _salvar();
+                  },
                 ),
+                SizedBox(height: 10,),
+                CheckboxListTile(title: Text("Dinheiro"), value: _money, onChanged: _isMoney)
               ],
             )
           )
@@ -159,6 +180,7 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
           },
         ),
       ],
+    ),
     );
   }
 }
