@@ -1,5 +1,6 @@
 import 'package:agora_vai/db/DbHelper.dart';
 import 'package:agora_vai/model/Objetivo.dart';
+import 'package:agora_vai/storage/storage_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,9 @@ class NovoObjetivo extends StatefulWidget {
 class _NovoObjetivoState extends State<NovoObjetivo> {
   // Data Base
   var _db = DBHelper();
+
+  // Storage Mobx
+  final storage = Storage();
 
   final _form = GlobalKey<FormState>();
   List _objetivos;
@@ -67,16 +71,11 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
       _isLoading = true;
     });
     try {
-
       Objetivo objetivo = Objetivo(_objetivo.toLowerCase(), _meta, _money);
-      var salvarObjetivo = _db.salvarObjetivo(objetivo);
-      if(salvarObjetivo != null){
-
+      int id = await  _db.salvarObjetivo(objetivo);
+      if(id != null){
+        await storage.atualizaListObjetivo();
       }
-
-//      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_objetivo.toLowerCase());
-
-
     } catch (e) {
       //print(e);
     }

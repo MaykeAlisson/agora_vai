@@ -1,12 +1,13 @@
 import 'package:agora_vai/db/DbHelper.dart';
-import 'package:agora_vai/model/Objetivo.dart';
 import 'package:agora_vai/model/Usuario.dart';
 import 'package:agora_vai/screens/loading_screen.dart';
+import 'package:agora_vai/storage/storage_data.dart';
 import 'package:agora_vai/ui/nova_tarefa_page.dart';
 import 'package:agora_vai/ui/novo_objetivo_page.dart';
 import 'package:agora_vai/ui/objetivo_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../util/Mes.dart' as mes;
@@ -25,20 +26,24 @@ class _HomeState extends State<Home> {
   // Data Base
   var _db = DBHelper();
 
+  // Storage Mobx
+  final storage = Storage();
+
   bool _isLoading = false;
   bool _isListLoading = false;
   String _nome;
   int _xp;
   int _lancamentos;
   int _qtdObjetivo;
-  List<Objetivo> _listObjetivos = List<Objetivo>();
+
+//  List<Objetivo> _listObjetivos = List<Objetivo>();
 
   void buscaDados() async {
     setState(() {
       _isLoading = true;
     });
 
-    List<Objetivo> listaTemporaria = List<Objetivo>();
+//    List<Objetivo> listaTemporaria = List<Objetivo>();
 
     try {
       Usuario usuario = await _db.recuperaUsuario();
@@ -47,21 +52,23 @@ class _HomeState extends State<Home> {
         _xp = usuario.xp;
       });
 
-      List objetivosRecuperados = await _db.recuperarObjetivos();
-      for(var item in objetivosRecuperados){
-        Objetivo objetivo = Objetivo.fromMap(item);
-        listaTemporaria.add(objetivo);
-      }
-      setState(() {
-        _listObjetivos = listaTemporaria;
-        _qtdObjetivo =  listaTemporaria == null ? 0 : listaTemporaria.length;
-      });
+//      List objetivosRecuperados = await _db.recuperarObjetivos();
+//      for(var item in objetivosRecuperados){
+//        Objetivo objetivo = Objetivo.fromMap(item);
+//        listaTemporaria.add(objetivo);
+//      }
+//      setState(() {
+//        _listObjetivos = listaTemporaria;
+//        _qtdObjetivo =  listaTemporaria == null ? 0 : listaTemporaria.length;
+//      });
+
+      await storage.atualizaListObjetivo();
 
       int qtdLancamento = await _db.recuperarQtdLancamentos();
       setState(() {
         _lancamentos = qtdLancamento;
       });
-      listaTemporaria = null;
+//      listaTemporaria = null;
     } catch (e) {
       //print(e); todo  criar dialog para mostrar erro
     }finally{
@@ -109,38 +116,40 @@ class _HomeState extends State<Home> {
                             fontSize: 17, fontWeight: FontWeight.w600))),
                 bottom: Perfil(_nome, _qtdObjetivo),
               ),
-              body: _listObjetivos.length == 0
-                  ? Center(
-                      child: Text("Nenhum Objetivo Cadastrado",
-                          style: GoogleFonts.poppins(
-                            textStyle:
-                                TextStyle(color: Colors.white, fontSize: 20),
-                          )))
-                  : _isListLoading
-                      ? Center(
-                          child: CircularProgressIndicator(
-                            backgroundColor: Colors.white,
-                          ),
-                        )
-                      : ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          padding: EdgeInsets.only(left: 20),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: _listObjetivos.length,
-                          itemBuilder: (context, index) {
-                            final objetivo = _listObjetivos[index];
-                            return Center(
-                              child: SingleChildScrollView(
-                                  child: ObjetivoCard(
-                                altura: height,
-                                largura: width,
-                                nome: objetivo.descricao,
-                                total: objetivo.qtdObjetivo,
-                                deleteFunction: () {},
-                              )),
-                            );
-                          },
-                        ),
+              body: Observer(
+                builder: (_) => storage.objetivos.length == 0
+                    ? Center(
+                    child: Text("Nenhum Objetivo Cadastrado",
+                        style: GoogleFonts.poppins(
+                          textStyle:
+                          TextStyle(color: Colors.white, fontSize: 20),
+                        )))
+                    : _isListLoading
+                    ? Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ),
+                )
+                    : ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  padding: EdgeInsets.only(left: 20),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: storage.objetivos.length,
+                  itemBuilder: (context, index) {
+                    final objetivo = storage.objetivos[index];
+                    return Center(
+                      child: SingleChildScrollView(
+                          child: ObjetivoCard(
+                            altura: height,
+                            largura: width,
+                            nome: objetivo.descricao,
+                            total: objetivo.qtdObjetivo,
+                            deleteFunction: () {},
+                          )),
+                    );
+                  },
+                ),
+              ),
             ),
           );
   }
