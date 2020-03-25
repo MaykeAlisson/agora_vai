@@ -17,7 +17,8 @@ abstract class _Storage with Store {
   var _db = DBHelper();
 
   @observable
-  List<Objetivo> objetivos;
+  ObservableList<Objetivo> objetivos = ObservableList();
+//  List<Objetivo> objetivos;
 
   @observable
   int qtdObjetivos;
@@ -31,7 +32,7 @@ abstract class _Storage with Store {
       Objetivo objetivo = Objetivo.fromMap(item);
       listaTemporaria.add(objetivo);
     }
-    objetivos = listaTemporaria;
+    objetivos.addAll(listaTemporaria);
     listaTemporaria = null;
   }
 

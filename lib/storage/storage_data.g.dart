@@ -12,14 +12,14 @@ mixin _$Storage on _Storage, Store {
   final _$objetivosAtom = Atom(name: '_Storage.objetivos');
 
   @override
-  List<Objetivo> get objetivos {
+  ObservableList<Objetivo> get objetivos {
     _$objetivosAtom.context.enforceReadPolicy(_$objetivosAtom);
     _$objetivosAtom.reportObserved();
     return super.objetivos;
   }
 
   @override
-  set objetivos(List<Objetivo> value) {
+  set objetivos(ObservableList<Objetivo> value) {
     _$objetivosAtom.context.conditionallyRunInAction(() {
       super.objetivos = value;
       _$objetivosAtom.reportChanged();
