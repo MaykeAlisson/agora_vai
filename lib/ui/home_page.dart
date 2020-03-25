@@ -52,11 +52,9 @@ class _HomeState extends State<Home> {
         Objetivo objetivo = Objetivo.fromMap(item);
         listaTemporaria.add(objetivo);
       }
-      print(listaTemporaria);
       setState(() {
         _listObjetivos = listaTemporaria;
         _qtdObjetivo =  listaTemporaria == null ? 0 : listaTemporaria.length;
-        print(_qtdObjetivo);
       });
 
       int qtdLancamento = await _db.recuperarQtdLancamentos();

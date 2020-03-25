@@ -14,7 +14,7 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
   var _db = DBHelper();
 
   final _form = GlobalKey<FormState>();
-  List<String> _objetivos;
+  List _objetivos;
   String _objetivo;
   int _meta;
   bool _isLoading = false;
@@ -30,7 +30,7 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
       _isLoading = true;
     });
     try {
-      List<String> listaTemporaria = List<String>();
+      List listaTemporaria = List();
       listaTemporaria = await _db.buscaNomeObjetivos();
       setState(() {
         _objetivos = listaTemporaria;
@@ -45,12 +45,17 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
   }
 
   bool jaExisteObjetivo(String nome) {
-    int index = _objetivos.indexOf(nome.toLowerCase());
-    if (index == -1) {
+    if(_objetivos == null){
       return false;
+    }else {
+      int index = _objetivos.indexOf(nome.toLowerCase());
+      if (index == -1) {
+        return false;
+      }
+      return true;
     }
-    return true;
   }
+
 
   Future<void> _salvar() async {
     final isValid = _form.currentState.validate();
@@ -63,9 +68,10 @@ class _NovoObjetivoState extends State<NovoObjetivo> {
     });
     try {
 
-      Objetivo objetivo = Objetivo(_objetivo, _meta, _money);
+      Objetivo objetivo = Objetivo(_objetivo.toLowerCase(), _meta, _money);
       var salvarObjetivo = _db.salvarObjetivo(objetivo);
       if(salvarObjetivo != null){
+
       }
 
 //      bool success = await Provider.of<HomeProvider>(context).addObjetivo(_objetivo.toLowerCase());

@@ -52,7 +52,7 @@ class MeuApp extends StatelessWidget {
       }
       return true;
     } catch (e) {
-      throw new Exception(e.toString());
+      throw new Exception(e.toString()); // todo Dialog
     }
   }
 

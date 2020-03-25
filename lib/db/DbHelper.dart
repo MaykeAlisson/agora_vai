@@ -31,6 +31,7 @@ class DBHelper {
   static final String objetivoColumnMoney = 'money';
   static final String objetivooColumnQtdObjetivo = 'qtd_objetivo';
   static final String objetivoColumnDtaCriacao = 'criacao';
+  static final String objetivoColumnQtdLancamento = 'qtd_lancamento';
 
   // torna esta classe singleton
   static final DBHelper _dbHelper = DBHelper.internal();
@@ -70,6 +71,7 @@ class DBHelper {
         "$objetivooColumnQtdObjetivo INTEGER, "
         "$objetivoColumnDescricao VARCHAR, "
         "$objetivoColumnMoney INTEGER, "
+        "$objetivoColumnQtdLancamento INTEGER, "
         "$objetivoColumnDtaCriacao DATETIME)";
 
     await db.execute(sql);
@@ -115,7 +117,7 @@ class DBHelper {
     var bancoDados = await db;
     String sql = "SELECT * FROM $tableUsuario LIMIT 1";
     var result = await bancoDados.rawQuery(sql);
-    if(result[0] != null || result[0] != []){
+    if(result.length > 0){
       return true;
     }
     return false;
@@ -162,11 +164,11 @@ class DBHelper {
     return lancamentos;
   }
 
-  Future<List<String>> buscaNomeObjetivos() async{
+  Future<List> buscaNomeObjetivos() async{
 
     var bancoDados = await db;
     String sql = "SELECT $objetivoColumnDescricao FROM $tableObjetivo ORDER BY $objetivoColumnDtaCriacao DESC";
-    List<String> objetivosNome = await bancoDados.rawQuery(sql);
+    List objetivosNome = await bancoDados.rawQuery(sql);
     return objetivosNome;
   }
 

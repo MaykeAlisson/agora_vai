@@ -5,9 +5,9 @@ class Objetivo{
   int _id;
   String _descricao;
   int _qtdObjetivo;
-  bool _money;
+  String _money;
   int _qtdLancamento;
-  DateTime _dtaCriacao;
+  String _dtaCriacao;
 
   Objetivo(
       final String descricao,
@@ -16,16 +16,17 @@ class Objetivo{
       ){
     this._descricao = descricao;
     this._qtdObjetivo = qtdObjetivo;
-    this._money = money;
-    this._dtaCriacao = new DateTime.now();
+    this._money = money == true ? "S" : "N";
+    this._qtdLancamento = null;
+    this._dtaCriacao = new DateTime.now().toString();
   }
 
-  DateTime get dtaCriacao => _dtaCriacao;
+  String get dtaCriacao => _dtaCriacao;
 
 
-  bool get money => _money;
+  String get money => _money;
 
-  set money(bool value) {
+  set money(String value) {
     _money = value;
   }
 
@@ -47,6 +48,13 @@ class Objetivo{
     _id = value;
   }
 
+
+  int get qtdLancamento => _qtdLancamento;
+
+  set qtdLancamento(int value) {
+    _qtdLancamento = value;
+  }
+
   Objetivo.fromMap(Map map){
     this._id = map[DBHelper.objetivoColumnId];
     this._descricao = map[DBHelper.objetivoColumnDescricao];
@@ -62,7 +70,7 @@ class Objetivo{
       DBHelper.objetivooColumnQtdObjetivo : this._qtdObjetivo,
       DBHelper.objetivoColumnMoney : this._money,
       DBHelper.objetivoColumnDtaCriacao : this._dtaCriacao,
-      'qtdLancamento': this._qtdLancamento,
+      DBHelper.objetivoColumnQtdLancamento: this._qtdLancamento,
     };
 
     if(this._id != null){
